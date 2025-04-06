@@ -2,72 +2,87 @@ import board as brd
 
 
 
-def brute_force_solve(board, prev_move='X', iter_number=0):
-    
-    
-    if board._board == board._target_board:
-        return board
-    #wykonaj kopię
-    #zrob na niej ruch
-    # ^ te dwa to wlasciwie ten sam ruch
-    
-    #sprawdz poprawnosc
-    #zatrzymaj jezeli poprawne ALBO osiagnieto maks glebo
-    #wywolaj kolejna rekurencje (najlepiej wzdluz galezi)
-    
-    if iter_number >= 100:
-        pass
-    else:
-        if prev_move == 'N':
-            block = 'S'
-        elif prev_move == 'S':
-            block = 'N'
-        elif prev_move == 'W':
-            block = 'E'
-        elif prev_move == 'E':
-            block = 'W'
-        elif prev_move == 'X':
-            block = "X"
-        else:
-            raise ValueError("Wrong previous move value")
-    
-        possible_moves = board.find_possible_moves()
-        for move in possible_moves:
-            if not (move == block):                
-                cp_b = board.deepcopy()
-                cp_b.make_move(move)
-                # print('==', iter_number)
-                # cp_b.display()
-                # if cp_b._board == board._target_board:
-                #     return cp_b
-                result = brute_force_solve(cp_b, move, iter_number+1)
-                if isinstance(result, brd.Board):
-                    if iter_number >= 10:
-                        print(iter_number)
-                    return result
-                
-                
-                
-                
-                
-def bfs(board, iter_number=1):
-    
-    if board._board == board._target_board:
-        return board
-    
-    if iter_number >= 20:
-        return False
-    
-    else:
-        possible_moves = board.find_possible_moves()
-        for move in possible_moves:
-            cp_b = board.deepcopy()
-            cp_b.make_move(possible_moves[0])
-            result = bfs(cp_b, iter_number+1)
-            if result != False:
-                return result
+def bfs(board, order, max_iter=10000):
+    visited = set()
+    queue = [(board.deepcopy(), [])]
+    i = 0
+
+    while queue and i < max_iter:
+        current_board, path = queue.pop(0)
+        state = current_board.board_to_tuple()
+
+        if state in visited:
+            continue
+
+        visited.add(state)
+
+        if current_board._board == current_board._target_board:
+            print(f"Solution found in {len(path)} moves after {i} iterations")
+            print("Move sequence:", path)
+            current_board.display()
+            return path  # Optionally return the final board too
+
+        for move in current_board.find_possible_moves():
+            new_board = current_board.deepcopy()
+            new_board.make_move(move)
+            queue.append((new_board, path + [move]))
+
+        i += 1
+
+        if i % 1000 == 0:
+            print(f"Iteration: {i}, Queue size: {len(queue)}")
+        if i % 10000 == 0:
+            current_board.display()
+
+    print("No solution found within iteration limit.")
+    return None
 
 
+def dfs(board, order, max_iter=10000):
+    
+    visited = set()
+    stack = [(board.deepcopy())]  
+    i = 0
+    
+    while i < max_iter and stack:
+        
+        current_board = stack.pop()
+                
+        if current_board not in visited:
+            
+            visited.add(current_board)
+    
+            if current_board._board == current_board._target_board:
+                print(f"Solution found in {i} moves")
+                return current_board
+    
+            for move in current_board.find_possible_moves():
+                new_board = current_board.deepcopy()
+                new_board.make_move(move)
+                stack.append(new_board)
+
+        i += 1
+        if i % 1000 == 0:
+            print(f"Iteration: {i}, Stack size: {len(stack)}")
+        if i % 10000 == 0:
+            current_board.display()
+
+    print("No solution found within iteration limit.")
+    return None
+
+    
+
+def test_bfs():
+    b1 = brd.Board(4, 4)
+    b1.display()
+    
+    print()
+    solved = bfs(b1, None, 100000000)
+    if solved is not None:
+        print(solved)
+    else:
+        print("Nie rozwiazano")
+    
 
 #lets test if it reaches all assumed scenarios            
 def recurency_test(iter_number=0):
@@ -79,3 +94,4 @@ def recurency_test(iter_number=0):
     return lower_tiers_sum
 
 # print(recurency_test())
+test_bfs()

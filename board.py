@@ -12,6 +12,15 @@ class Board():
         self._board = list()
         self.shuffle_board()
         self._blank_position = self._find_blank()
+        self._last_move = None
+
+        
+    def __eq__(self, other):
+        return self._board == other._board
+
+    def __hash__(self):
+        return hash(self.board_to_tuple())
+
         
         
     def get_width(self):
@@ -70,6 +79,7 @@ class Board():
             possible_moves.append('N')
         if (self._blank_position[1] != self._height-1):
             possible_moves.append('S')
+            
         return possible_moves
     
     def make_move(self, move):
@@ -79,18 +89,22 @@ class Board():
         if (move == 'N'):
             self._board[i][j] = self._board[i][j-1]
             self._board[i][j-1] = 0
+            self._last_move = move
             self._blank_position = (i, j-1)
         elif (move == 'E'):
             self._board[i][j] = self._board[i+1][j]
             self._board[i+1][j] = 0
+            self._last_move = move
             self._blank_position = (i+1, j)
         elif (move == 'S'):
             self._board[i][j] = self._board[i][j+1]
             self._board[i][j+1] = 0
+            self._last_move = move
             self._blank_position = (i, j+1)
         elif (move == 'W'):
             self._board[i][j] = self._board[i-1][j]
             self._board[i-1][j] = 0
+            self._last_move = move
             self._blank_position = (i-1, j)
         else:
             raise ValueError("Wrong move format/name")
@@ -118,6 +132,14 @@ class Board():
 
     def load_board(self, path:str):
         raise NotImplementedError()
+        
+    def board_to_tuple(self):
+        return tuple(
+            tuple(self._board[x][y] for x in range(self._width))
+            for y in range(self._height)
+        )
+
+
     
     
 # tworzenie tablicy, tworzenie kopii, wykonywanie ruchow
