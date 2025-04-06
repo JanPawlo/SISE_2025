@@ -133,11 +133,6 @@ class Board():
     def load_board(self, path:str):
         raise NotImplementedError()
         
-    def board_to_tuple(self):
-        return tuple(
-            tuple(self._board[x][y] for x in range(self._width))
-            for y in range(self._height)
-        )
 
 
     
