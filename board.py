@@ -67,20 +67,27 @@ class Board():
                 if self._board[i][j] == 0:
                     return i, j
                 
-    def find_possible_moves(self):
+    def find_possible_moves(self, order):
+        
         possible_moves = list()
+        
+        i, j = self._blank_position
     
         #todo: optimise if's
-        if (self._blank_position[0] != 0):
+        if (i != 0):
             possible_moves.append('W')
-        if (self._blank_position[0] != self._width-1):
+        if (i != self._width-1):
             possible_moves.append('E')
-        if (self._blank_position[1] != 0):
+        if (j != 0):
             possible_moves.append('N')
-        if (self._blank_position[1] != self._height-1):
+        if (j != self._height-1):
             possible_moves.append('S')
             
-        return possible_moves
+        dir_map = {'L': 'W', 'R': 'E', 'U': 'N', 'D': 'S'}
+        ordered = [dir_map[o] for o in order if dir_map[o] in possible_moves]
+        return ordered
+            
+
     
     def make_move(self, move):
         
@@ -141,10 +148,10 @@ class Board():
 def test_01():
     b1 = Board(4, 4)
     b1.display()
-    b2 = b1.deepcopy()
+    # b2 = b1.deepcopy()
     print('==')
-    b1.make_move(b1.find_possible_moves()[0])
+    b1.make_move(b1.find_possible_moves('LRUD')[0])
     b1.display()
     print()
-    b2.display()
+    # b2.display()
 # test_01()

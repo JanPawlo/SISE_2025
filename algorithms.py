@@ -1,91 +1,91 @@
 import board as brd
+import time
 
 
 
 def bfs(board, order, max_iter=10000):
+    
     visited = set()
-    queue = [(board.deepcopy(), [])]
+    queue = [(board.deepcopy(), [], 0)]
     i = 0
+    highest_depth = 0
+    start = time.time()
 
     while queue and i < max_iter:
-        current_board, path = queue.pop(0)
+        i += 1
+        current_board, path, depth = queue.pop(0)
         state = tuple(tuple(i) for i in current_board._board)
 
         if state in visited:
             continue
+        
+        if depth > highest_depth:
+            highest_depth = depth
 
         visited.add(state)
 
         if current_board._board == current_board._target_board:
-            print(f"Solution found in {len(path)} moves after {i} iterations")
-            print("Move sequence:", path)
-            current_board.display()
-            return path  # Optionally return the final board too
+            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
-        for move in current_board.find_possible_moves():
+        for move in current_board.find_possible_moves(order):
             new_board = current_board.deepcopy()
             new_board.make_move(move)
-            queue.append((new_board, path + [move]))
+            queue.append((new_board, path + [move], depth+1))
 
-        i += 1
+       
 
-        if i % 1000 == 0:
-            print(f"Iteration: {i}, Queue size: {len(queue)}")
-        if i % 10000 == 0:
-            current_board.display()
-
-    print("No solution found within iteration limit.")
-    return None
+    return -1, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
 
-def dfs(board, order, max_iter=10000):
+def dfs(board, order, max_iter=1000000, max_depth=20):
     visited = set()
-    stack = [(board.deepcopy(), [])]  # Store (board, path)
+    stack = [(board.deepcopy(), [], 0)]  # Store (board, path)
     i = 0
+    order = order
+    highest_depth = 0
+    start = time.time()
 
     while stack and i < max_iter:
-        current_board, path = stack.pop()
-
+        
+        current_board, path, depth = stack.pop()
+        
+        
+        if depth > max_depth:
+            continue
+        
         state = tuple(tuple(i) for i in current_board._board)
 
-        if state in visited:
-            continue
-
-        visited.add(state)
+        if state not in visited:
+            visited.add(state)
+            
+        if depth > highest_depth:
+            highest_depth = depth
 
         if current_board._board == current_board._target_board:
-            print(f"Solution found in {len(path)} moves after {i} iterations")
-            print("Move sequence:", path)
-            current_board.display()
-            return path  # Optionally return the final board too
+            return len(path), len(visited), i, max_depth, round((time.time() - start)*1000, 3)
 
-        for move in current_board.find_possible_moves():
+        for move in reversed(current_board.find_possible_moves(order)):
             new_board = current_board.deepcopy()
             new_board.make_move(move)
-            stack.append((new_board, path + [move]))  # Add move to path
+            stack.append((new_board, path + [move], depth+1))  # Add move to path
 
         i += 1
 
-        if i % 1000 == 0:
-            print(f"Iteration: {i}, Stack size: {len(stack)}")
-        if i % 10000 == 0:
-            current_board.display()
 
-    print("No solution found within iteration limit.")
-    return None
+    return -1, len(visited), i, max_depth, round((time.time() - start)*1000, 3)
 
 
     
 
 def test_bfs():
     b1 = brd.Board(4, 4)
-    b1._board = [
-    [1, 5, 9, 13],
-    [2, 6, 10, 12],
-    [3, 7, 11, 14],
-    [4, 8, 15, 0]
-    ]
-    b1._blank_position = (3, 3)
+    # b1._board = [
+    # [1, 5, 9, 13],
+    # [2, 6, 10, 14],
+    # [4, 0, 7, 11],
+    # [8, 3, 12, 15]
+    # ]
+    # b1._blank_position = (3, 3)
     # b1._board = [
     # [1, 5, 9, 13],
     # [2, 6, 0, 14],
@@ -93,15 +93,23 @@ def test_bfs():
     # [4, 8, 11, 12]
     # ]
     # b1._blank_position = (2, 2)
+    b1._board = [
+    [1, 5, 9, 13],
+    [2, 0, 11, 10],
+    [3, 6, 7, 14],
+    [4, 8, 12, 15]
+    ]
+    b1._blank_position = (1, 2)
     b1.display()
     
     print()
-    solved = dfs(b1, None, 100000000)
-    if solved is not None:
-        print(solved)
-    else:
-        print("Nie rozwiazano")
-    
+    solved = bfs(b1, 'LRUD', 100000000)
+    print("długość znalezionego rozwiązania: ", solved[0])
+    print("liczba stanów odwiedzonych: ", solved[1])
+    print("liczba stanów przetworzonych: ", solved[2])
+    print("maksymalna głębokość: ", solved[3])
+    print("czas trwania procesu obliczeniowego w milisekundach: ", solved[4])    
+        
 
 #lets test if it reaches all assumed scenarios            
 def recurency_test(iter_number=0):
