@@ -25,7 +25,7 @@ def bfs(board, order, max_iter=10000000):
         visited.add(state)
 
         if current_board._board == current_board._target_board:
-            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+            return path, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
         for move in current_board.find_possible_moves(order):
             new_board = current_board.deepcopy()
@@ -62,7 +62,7 @@ def dfs(board, order, max_iter=10000000, max_depth=20):
             highest_depth = depth
 
         if current_board._board == current_board._target_board:
-            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+            return path, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
         for move in reversed(current_board.find_possible_moves(order)):
             new_board = current_board.deepcopy()
@@ -103,7 +103,7 @@ def a_star(board, heuristic):
         
         # check ig the goal is reached
         if current_board._board == current_board._target_board:
-            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+            return path, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
         
         state = tuple(tuple(i) for i in current_board._board)
         if state in visited:
@@ -160,7 +160,7 @@ def test_bfs():
     
     print()
     solved = a_star(b1, 'hamm')
-    print("długość znalezionego rozwiązania: ", solved[0])
+    print("długość znalezionego rozwiązania: ", len(solved[0]))
     print("liczba stanów odwiedzonych: ", solved[1])
     print("liczba stanów przetworzonych: ", solved[2])
     print("maksymalna głębokość: ", solved[3])
@@ -177,4 +177,4 @@ def recurency_test(iter_number=0):
     return lower_tiers_sum
 
 # print(recurency_test())
-test_bfs()
+# test_bfs()

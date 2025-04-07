@@ -1,82 +1,50 @@
-import algorithms as alr
-import board as brd
 import sys
+from algorithms import bfs, dfs, a_star
+from board import Board
 
 
-# def test_02():
-#     width = 2
-#     height = 2
-#     b1 = brd.Board(width, height)
-#     b1._board[0][0] = 1
-#     b1._board[1][0] = 2
-#     b1._board[0][1] = 0
-#     b1._board[1][1] = 3
-#     b1.reset_blank_position()
-#     b1.display()
-#     print()
-#     wynik = alr.brute_force_solve(b1)    
-#     if (isinstance(wynik, brd.Board)):
-#         print()
-#         wynik.display()
 
-
-def test_03():
-    counter = 0
-    width = 2
-    height = 2
+def save_solution(path, moves):
+    f = open(path, 'w')
     
-    for i in range(50):
-        b1 = brd.Board(width, height)
-        # wynik = alr.bfs(b1)
-        wynik = alr.brute_force_solve(b1)    
-        if (isinstance(wynik, brd.Board)):
-            counter += 1
-    print ('sucess rate:', (counter/50)*100, '%')
-    
+    if moves == -1:
+        f.write("-1")
+    else:
+        f.write(f"{len(moves)}\n")
+        f.write("".join(moves))
 
-#37
-def main():
-
-    # width = 2
-    # height = 2
-    # board = brd.Board(width, height)
-    # print("Poczatkowa tablica:")
-    # board.display()
-    # print()
+def save_stats(path, movesNum, visited, processed, depth, time_ms):
+    f = open(path, 'w')
     
-    # print("Wynik:")
-    # wynik = alr.brute_force_solve(board)    
-    # if (isinstance(wynik, brd.Board)):
-    #     print("SUKCES")
-    #     wynik.display()
-    # test_02()
-    test_03()    
+    f.write(f"{movesNum}\n")
+    f.write(f"{processed}\n")
+    f.write(f"{visited}\n")
+    f.write(f"{depth}\n")
+    f.write(f"{time_ms}\n")
     
-main()
+    f.close()
 
+if __name__ == "__main__":
+    if len(sys.argv) != 6:
+        print("Usage: python main.py <strategy> <param> <input_file> <solution_file> <stats_file>")
+        sys.exit(1)
 
+    strategy, param, input_file, sol_file, stats_file = sys.argv[1:]
 
+    board = Board(1, 1) # height and width here dont matter
+    board.load_board(input_file)
 
-    # args = sys.argv
-    # print(args)
-    # #sraka, nie dziala
-    # width = 2; height = 2;
-    
-    # # board = gnr.load_board()
-    
-    # board = gnr.generate_board(width, height)
-    # target_board = gnr.generate_solved_board(width, height)
+    if strategy == "bfs":
+        moves, visited, processed, depth, time_ms = bfs(board, param)
+    elif strategy == "dfs":
+        moves, visited, processed, depth, time_ms = dfs(board, param)
+    elif strategy == "astr":
+        moves, visited, processed, depth, time_ms = a_star(board, param)
+    else:
+        print(f"Unknown strategy: {strategy}")
+        sys.exit(2)
 
-    # gnr.display_board(board)
-    
-    # alg.brute_force_solve(board, target_board)
-    # # gnr.display_board(target_board)
-    # # print(target_board)
-    # print()
-    # gnr.display_board(board)
-    
-    # # print(alg.find_blank(board))
-    # # print(alg.find_possible_moves(board))
-    # # alg.make_move(board, alg.find_possible_moves(board)[0])
-    # # gnr.display_board(board)
+    save_solution(sol_file, moves)
+    save_stats(stats_file, len(moves), visited, processed, depth, time_ms)
+
     

@@ -134,11 +134,28 @@ class Board():
         copy._blank_position = copy._find_blank()
         return copy
     
-    def save_board(self):
-        raise NotImplementedError()
-
+    
     def load_board(self, path:str):
-        raise NotImplementedError()
+        
+        f = open(path, 'r')
+        
+        w, k = f.readline().split() 
+        
+        self._height = int(w)
+        self._width = int(k)
+        
+        new_board = [[None for _ in range(self._height)] for _ in range(self._width)]
+        
+        for i in range(self._height):
+            row = f.readline().split()
+            for j in range(len(row)):
+                new_board[j][i] = int(row[j])
+                
+        
+        self._board = new_board
+        self._blank_position = self._find_blank()
+        
+        f.close()
 
     def manhattan_heuristic(self):
         total_distance = 0
@@ -203,6 +220,10 @@ def test_01():
     b1.make_move(b1.find_possible_moves('LRUD')[0])
     b1.display()
     print()
-
+    
+    b2 = Board(3, 3)
+    b2.load_board("test_board.txt")
+    b2.display()
+    
     # b2.display()
-# test_01()
+#test_01()
