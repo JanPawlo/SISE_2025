@@ -67,7 +67,7 @@ class Board():
                 if self._board[i][j] == 0:
                     return i, j
                 
-    def find_possible_moves(self, order):
+    def find_possible_moves(self, order:str):
         
         possible_moves = list()
         
@@ -75,40 +75,44 @@ class Board():
     
         #todo: optimise if's
         if (i != 0):
-            possible_moves.append('W')
+            possible_moves.append('L')
         if (i != self._width-1):
-            possible_moves.append('E')
+            possible_moves.append('R')
         if (j != 0):
-            possible_moves.append('N')
+            possible_moves.append('U')
         if (j != self._height-1):
-            possible_moves.append('S')
+            possible_moves.append('D')
             
-        dir_map = {'L': 'W', 'R': 'E', 'U': 'N', 'D': 'S'}
-        ordered = [dir_map[o] for o in order if dir_map[o] in possible_moves]
-        return ordered
-            
+        # order by lrud or smth like that
+        ordered = list()
+        
+        for i in range (4):
+            current_letter = order[i]
+            if current_letter in possible_moves:
+                ordered.append(current_letter)
 
+        return ordered
     
     def make_move(self, move):
         
         i, j = self._blank_position
         
-        if (move == 'N'):
+        if (move == 'U'):
             self._board[i][j] = self._board[i][j-1]
             self._board[i][j-1] = 0
             self._last_move = move
             self._blank_position = (i, j-1)
-        elif (move == 'E'):
+        elif (move == 'R'):
             self._board[i][j] = self._board[i+1][j]
             self._board[i+1][j] = 0
             self._last_move = move
             self._blank_position = (i+1, j)
-        elif (move == 'S'):
+        elif (move == 'D'):
             self._board[i][j] = self._board[i][j+1]
             self._board[i][j+1] = 0
             self._last_move = move
             self._blank_position = (i, j+1)
-        elif (move == 'W'):
+        elif (move == 'L'):
             self._board[i][j] = self._board[i-1][j]
             self._board[i-1][j] = 0
             self._last_move = move
@@ -226,4 +230,4 @@ def test_01():
     b2.display()
     
     # b2.display()
-#test_01()
+# test_01()

@@ -50,5 +50,5 @@ def load_board(path:str) -> list:
     # np.random
 
 # print(generate_board(4, 4))
-
+     
 # display_board(generate_board(4,4))
