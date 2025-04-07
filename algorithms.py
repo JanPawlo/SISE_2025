@@ -3,7 +3,7 @@ import time
 
 
 
-def bfs(board, order, max_iter=10000):
+def bfs(board, order, max_iter=10000000):
     
     visited = set()
     queue = [(board.deepcopy(), [], 0)]
@@ -37,7 +37,7 @@ def bfs(board, order, max_iter=10000):
     return -1, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
 
-def dfs(board, order, max_iter=1000000, max_depth=20):
+def dfs(board, order, max_iter=10000000, max_depth=20):
     visited = set()
     stack = [(board.deepcopy(), [], 0)]  # Store (board, path)
     i = 0
@@ -62,7 +62,7 @@ def dfs(board, order, max_iter=1000000, max_depth=20):
             highest_depth = depth
 
         if current_board._board == current_board._target_board:
-            return len(path), len(visited), i, max_depth, round((time.time() - start)*1000, 3)
+            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
 
         for move in reversed(current_board.find_possible_moves(order)):
             new_board = current_board.deepcopy()
@@ -72,20 +72,75 @@ def dfs(board, order, max_iter=1000000, max_depth=20):
         i += 1
 
 
-    return -1, len(visited), i, max_depth, round((time.time() - start)*1000, 3)
+    return -1, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+
+def a_star(board, heuristic):
+    
+    openList = [(board.deepcopy(), [], 0)] # to be visited
+    visited = set() # Already visited
+    
+    highest_depth = 0
+    start = time.time()
+    i = 0
+    
+    if heuristic == 'manh':
+        heuristic = lambda x : x.manhattan_heuristic()
+    elif heuristic == 'hamm':
+        heuristic = lambda x : x.hamming_heuristic()
+
+            
+        
+        
+    while openList:
+        #TBD
+        
+        # get node with lowest total cost
+        openList.sort(key=lambda x: (heuristic(x[0]) + len(x[1])))
+        current_board, path, depth = openList.pop(0)
+        
+        if depth > highest_depth:
+            highest_depth = depth
+        
+        # check ig the goal is reached
+        if current_board._board == current_board._target_board:
+            return len(path), len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+        
+        state = tuple(tuple(i) for i in current_board._board)
+        if state in visited:
+            continue
+        visited.add(state)
+        
+        # chceck neighbours
+        for move in current_board.find_possible_moves('LRUD'):# order doesnt matter
+            new_board = current_board.deepcopy()
+            new_board.make_move(move)
+            openList.append((new_board, path + [move], depth + 1))
+            
+        i+=1
+        
+    return -1, len(visited), i, highest_depth, round((time.time() - start)*1000, 3)
+        
+    
+  
+        
+
+        
+        
+    
+    
 
 
     
 
 def test_bfs():
     b1 = brd.Board(4, 4)
-    # b1._board = [
-    # [1, 5, 9, 13],
-    # [2, 6, 10, 14],
-    # [4, 0, 7, 11],
-    # [8, 3, 12, 15]
-    # ]
-    # b1._blank_position = (3, 3)
+    b1._board = [
+    [1, 5, 9, 13],
+    [2, 6, 10, 14],
+    [4, 0, 7, 11],
+    [8, 3, 12, 15]
+    ]
+    b1._blank_position = (3, 3)
     # b1._board = [
     # [1, 5, 9, 13],
     # [2, 6, 0, 14],
@@ -93,17 +148,18 @@ def test_bfs():
     # [4, 8, 11, 12]
     # ]
     # b1._blank_position = (2, 2)
-    b1._board = [
-    [1, 5, 9, 13],
-    [2, 0, 11, 10],
-    [3, 6, 7, 14],
-    [4, 8, 12, 15]
-    ]
-    b1._blank_position = (1, 2)
+    # b1._board = [
+    # [1, 5, 9, 13],
+    # [2, 0, 11, 10],
+    # [3, 6, 7, 14],
+    # [4, 8, 12, 15]
+    # ]
+    
+    # b1._blank_position = (1, 2)
     b1.display()
     
     print()
-    solved = bfs(b1, 'LRUD', 100000000)
+    solved = a_star(b1, 'hamm')
     print("długość znalezionego rozwiązania: ", solved[0])
     print("liczba stanów odwiedzonych: ", solved[1])
     print("liczba stanów przetworzonych: ", solved[2])

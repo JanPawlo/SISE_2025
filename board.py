@@ -139,7 +139,57 @@ class Board():
 
     def load_board(self, path:str):
         raise NotImplementedError()
+
+    def manhattan_heuristic(self):
+        total_distance = 0
         
+        for i in range(self._height):  # Loop over the rows
+            for j in range(self._width):  # Loop over the columns
+                tile_value = self._board[i][j]
+                
+                # Skip the blank tile (0)
+                if tile_value == 0:
+                    continue
+                    
+                # Calculate the target position of the current tile_value
+                target_i, target_j = get_index(self._target_board, tile_value)
+                
+
+                # Calculate the Manhattan distance for the current tile
+                total_distance += abs(i - target_i) + abs(j - target_j)
+        
+        return total_distance
+    
+    def hamming_heuristic(self):
+        
+        total_misplaced = 0
+        
+        for i in range(self._height):  # Loop over the rows
+            for j in range(self._width):  # Loop over the columns
+                tile_value = self._board[i][j]
+                
+                # Skip the blank tile (0)
+                if tile_value == 0:
+                    continue
+                    
+                # Calculate the target position of the current tile_value
+                target_i, target_j = get_index(self._target_board, tile_value)
+                
+                # Check if the tile is in the wrong position
+                if (i, j) != (target_i, target_j):
+                    total_misplaced += 1
+        
+        return total_misplaced
+
+
+
+def get_index(array, value):
+    for i in range(len(array)):  # Iterate through the rows
+        for j in range(len(array[i])):  # Iterate through the columns in each row
+            if array[i][j] == value:
+                return i, j  # Return the row and column indices (i, j)
+    return None  # If the value is not found, return None
+
 
 
     
@@ -153,5 +203,6 @@ def test_01():
     b1.make_move(b1.find_possible_moves('LRUD')[0])
     b1.display()
     print()
+
     # b2.display()
 # test_01()
