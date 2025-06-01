@@ -49,8 +49,8 @@ def load_all_training_data():
             if "f8_stat" in filename.lower() or "f10_stat" in filename.lower():
                 try:
                     X, Y, C = load_data(path)
-                    X_all.append(X[:4])
-                    Y_all.append(Y[:4])
+                    X_all.append(X[:20])
+                    Y_all.append(Y[:20])
                     print(f"Otwarto plik: {filename}")
                 except Exception as e:
                     print(f"Błąd w pliku {filename}: {e}")
