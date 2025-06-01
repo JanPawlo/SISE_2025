@@ -20,19 +20,19 @@ def load_data(filepath: str):
     ]
 
     labels = ["reference__x", "reference__y"]
+    coords = ["data__coordinates__x", "data__coordinates__y"]
 
-    X = (df[features].values)[:4]
-    Y = (df[labels].values)[:4]
+    X = (df[features].values)
+    Y = (df[labels].values)
+    C = (df[coords].values)
 
-    X_scaler = StandardScaler()
-    Y_scaler = StandardScaler()
-    X_scaled = X_scaler.fit_transform(X)
-    Y_scaled = Y_scaler.fit_transform(Y)
+
+
 
     # 6sta kolumna - dane z yaw
     # yaw_rad = np.deg2rad(X[:5])
 
-    return X_scaled, Y_scaled
+    return X, Y, C
 
 
 def load_all_training_data():
@@ -48,9 +48,9 @@ def load_all_training_data():
             filename = os.path.basename(path)
             if "f8_stat" in filename.lower() or "f10_stat" in filename.lower():
                 try:
-                    X, Y = load_data(path)
-                    X_all.append(X)
-                    Y_all.append(Y)
+                    X, Y, C = load_data(path)
+                    X_all.append(X[:4])
+                    Y_all.append(Y[:4])
                     print(f"Otwarto plik: {filename}")
                 except Exception as e:
                     print(f"Błąd w pliku {filename}: {e}")
@@ -65,4 +65,38 @@ def load_all_training_data():
     X_scaled = X_scaler.fit_transform(X_combined)
     Y_scaled = Y_scaler.fit_transform(Y_combined)
 
-    return X_scaled, Y_scaled
+    return X_scaled, Y_scaled, X_scaler, Y_scaler
+
+
+def load_all_test_data(X_scaler, Y_scaler, C_scaler):
+    # Foldery do przeszukania
+    folders = ["../pomiary/F8", "../pomiary/F10"]
+    pattern = "*_*.xlsx"
+
+    X_all, Y_all, C_all = [], [], []
+
+    for folder in folders:
+        filepaths = glob.glob(os.path.join(folder, pattern))
+        for path in filepaths:
+            filename = os.path.basename(path)
+            if "f8_stat" not in filename.lower() and "f10_stat" not in filename.lower() and "f8_random" not in filename.lower() and "f10_random" not in filename.lower()   :
+                try:
+                    X, Y, C = load_data(path)
+                    X_all.append(X)
+                    Y_all.append(Y)
+                    C_all.append(C)
+                    print(f"Otwarto plik: {filename}")
+                except Exception as e:
+                    print(f"Błąd w pliku {filename}: {e}")
+
+    # Sklej dane
+    X_combined = np.vstack(X_all)
+    Y_combined = np.vstack(Y_all)
+    C_combined = np.vstack(C_all)
+
+    # Skalowanie
+    X_scaled = X_scaler.transform(X_combined)
+    Y_scaled = Y_scaler.transform(Y_combined)
+    C_scaled = C_scaler.transform(C_combined)
+
+    return X_scaled, Y_scaled, C_scaled
