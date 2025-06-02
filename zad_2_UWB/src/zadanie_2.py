@@ -20,7 +20,7 @@ def train_neural_network(X, y):
 
     model = NeuralNetwork()
 
-    n_epochs = 100
+    n_epochs = 200
     batch_size = 32
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -28,7 +28,7 @@ def train_neural_network(X, y):
     train_losses = []
     val_losses = []
     best_val_loss = float('inf')
-    patience = 10
+    patience = 20
     patience_counter = 0
 
     for epoch in range(n_epochs):
@@ -109,15 +109,30 @@ def main():
     # Błąd danych testowych
     error_sensor = euclidean_error(coords, y_test)
 
+    # Wykres pozycji
+    plt.figure(figsize=(8, 6))
+    plt.scatter(coords[:, 0], coords[:, 1], c='green', label='Odczyty z czujników', alpha=0.3)
+    plt.scatter(y_pred_test[:, 0], y_pred_test[:, 1], c='red', label='Przewidywania sieci neuronowej', alpha=0.3)
+    plt.scatter(y_test[:, 0], y_test[:, 1], c='blue', label='Rzeczywiste pozycje', alpha=0.6)
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.title("Porównanie pozycji: rzeczywiste, przewidywane, czujniki")
+    plt.legend()
+    plt.grid(True)
+    plt.axis('equal')
+    plt.show()
+
+    # dystrybuanta bledu
     plt.figure(figsize=(8, 6))
     plot_ecdf(network_error, "Sieć neuronowa")
     plot_ecdf(error_sensor, "Błąd danych testowych")
-
     plt.xlabel("Błąd lokalizacji")
     plt.ylabel("Dystrybuanta empiryczna (ECDF)")
     plt.title("Porównanie błędu lokalizacji")
     plt.legend()
     plt.grid(True)
     plt.show()
+
+
 
 main()

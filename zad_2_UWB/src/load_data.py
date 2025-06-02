@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 def load_data(filepath: str):
@@ -25,9 +25,6 @@ def load_data(filepath: str):
     X = (df[features].values)
     Y = (df[labels].values)
     C = (df[coords].values)
-
-
-
 
     # 6sta kolumna - dane z yaw
     # yaw_rad = np.deg2rad(X[:5])
@@ -60,8 +57,8 @@ def load_all_training_data():
     Y_combined = np.vstack(Y_all)
 
     # Skalowanie
-    X_scaler = StandardScaler()
-    Y_scaler = StandardScaler()
+    X_scaler = MinMaxScaler()
+    Y_scaler = MinMaxScaler()
     X_scaled = X_scaler.fit_transform(X_combined)
     Y_scaled = Y_scaler.fit_transform(Y_combined)
 
