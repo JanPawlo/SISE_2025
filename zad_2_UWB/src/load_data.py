@@ -10,11 +10,7 @@ def load_data(filepath: str):
     df = pd.read_excel(filepath)
 
     features = [
-        "data__tagData__gyro__x", "data__tagData__gyro__y", "data__tagData__gyro__z",
-        "data__tagData__magnetic__x", "data__tagData__magnetic__y", "data__tagData__magnetic__z",
-        "data__tagData__linearAcceleration__x", "data__tagData__linearAcceleration__y",
-        "data__tagData__linearAcceleration__z",
-        "data__acceleration__x", "data__acceleration__y", "data__acceleration__z",
+
         "data__coordinates__x", "data__coordinates__y"
     ]
 

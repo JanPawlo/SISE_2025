@@ -19,8 +19,8 @@ def train_neural_network(X, y):
 
     model = NeuralNetwork()
 
-    n_epochs = 300
-    batch_size = 8
+    n_epochs = 100
+    batch_size = 512
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
