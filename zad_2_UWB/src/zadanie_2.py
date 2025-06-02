@@ -4,7 +4,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 from neural_network import NeuralNetwork
 from load_data import load_all_training_data, load_all_test_data, load_data
@@ -19,8 +19,8 @@ def train_neural_network(X, y):
 
     model = NeuralNetwork()
 
-    n_epochs = 100
-    batch_size = 512
+    n_epochs = 300
+    batch_size = 32
     loss_fn = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
@@ -93,7 +93,8 @@ def plot_ecdf(data, label):
 def main():
     # UWAGA SA WCZYTYWANE PO 4 WPISY Z PLIKU W OBECNEJ IMPLEMENTACJI
     X_train, y_train, X_scaler, Y_scaler = load_all_training_data()
-    X_test, y_test_scaled, coords = load_all_test_data(X_scaler, Y_scaler, Y_scaler)
+    C_scaler = MinMaxScaler()
+    X_test, y_test_scaled, coords = load_all_test_data(X_scaler, Y_scaler, C_scaler)
     model = train_neural_network(X_train, y_train)
 
 
@@ -101,7 +102,7 @@ def main():
 
     y_pred_test = Y_scaler.inverse_transform(y_pred_test_scaled)
     y_test = Y_scaler.inverse_transform(y_test_scaled)
-    coords = Y_scaler.inverse_transform(coords)
+    coords = C_scaler.inverse_transform(coords)
 
     # Błąd sieci neuronowej
     network_error = euclidean_error(y_pred_test, y_test)

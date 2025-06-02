@@ -89,6 +89,6 @@ def load_all_test_data(X_scaler, Y_scaler, C_scaler):
     # Skalowanie
     X_scaled = X_scaler.transform(X_combined)
     Y_scaled = Y_scaler.transform(Y_combined)
-    C_scaled = C_scaler.transform(C_combined)
+    C_scaled = C_scaler.fit_transform(C_combined)
 
     return X_scaled, Y_scaled, C_scaled
