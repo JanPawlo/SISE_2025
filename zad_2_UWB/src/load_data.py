@@ -17,6 +17,16 @@ def load_data(filepath: str):
     labels = ["reference__x", "reference__y"]
     coords = ["data__coordinates__x", "data__coordinates__y"]
 
+    # Usuń kolumny, które są w całości puste
+    df = df.dropna(axis=1, how='all')
+
+    # Usuń wiersze z brakującymi danymi w istotnych kolumnach
+    df = df.dropna(subset=features + labels)
+
+    # Jeśli po czyszczeniu nie ma danych — rzuć wyjątek
+    if df.empty:
+        raise ValueError(f"Plik {filepath} zawiera tylko puste dane po przefiltrowaniu.")
+
     X = (df[features].values)
     Y = (df[labels].values)
     C = (df[coords].values)
