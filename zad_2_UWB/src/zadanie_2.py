@@ -7,8 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from neural_network import NeuralNetwork
-from load_data import load_all_training_data, load_all_test_data
-
+from load_data import load_all_training_data, load_all_test_data, load_data
 
 def train_neural_network(X, y):
     # Konwersja danych
@@ -20,10 +19,10 @@ def train_neural_network(X, y):
 
     model = NeuralNetwork()
 
-    n_epochs = 200
-    batch_size = 32
+    n_epochs = 300
+    batch_size = 8
     loss_fn = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     train_losses = []
     val_losses = []
@@ -96,6 +95,7 @@ def main():
     X_train, y_train, X_scaler, Y_scaler = load_all_training_data()
     X_test, y_test_scaled, coords = load_all_test_data(X_scaler, Y_scaler, Y_scaler)
     model = train_neural_network(X_train, y_train)
+
 
     y_pred_test_scaled = model(torch.tensor(X_test, dtype=torch.float32)).detach().numpy()
 

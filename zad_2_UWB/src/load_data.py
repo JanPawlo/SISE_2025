@@ -15,7 +15,6 @@ def load_data(filepath: str):
         "data__tagData__linearAcceleration__x", "data__tagData__linearAcceleration__y",
         "data__tagData__linearAcceleration__z",
         "data__acceleration__x", "data__acceleration__y", "data__acceleration__z",
-        "data__orientation__yaw", "data__orientation__roll", "data__orientation__pitch",
         "data__coordinates__x", "data__coordinates__y"
     ]
 
@@ -46,8 +45,8 @@ def load_all_training_data():
             if "f8_stat" in filename.lower() or "f10_stat" in filename.lower():
                 try:
                     X, Y, C = load_data(path)
-                    X_all.append(X[:20])
-                    Y_all.append(Y[:20])
+                    X_all.append(X[:25])
+                    Y_all.append(Y[:25])
                     print(f"Otwarto plik: {filename}")
                 except Exception as e:
                     print(f"Błąd w pliku {filename}: {e}")
