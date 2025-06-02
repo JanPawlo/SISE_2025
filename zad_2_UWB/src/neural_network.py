@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 class NeuralNetwork(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim=6):
         super().__init__()
-        self.hidden1 = nn.Linear(2, 32)
+        self.hidden1 = nn.Linear(input_dim, 32)
         self.bn1 = nn.BatchNorm1d(32)
         self.act1 = nn.ReLU()
         self.dropout1 = nn.Dropout(0.3)

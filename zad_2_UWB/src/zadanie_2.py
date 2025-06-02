@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from neural_network import NeuralNetwork
 from load_data import load_all_training_data, load_all_test_data, load_data
 
-def train_neural_network(X, y):
+def train_neural_network(X, y, n_steps=3):
     # Konwersja danych
     X = torch.tensor(X, dtype=torch.float32)
     y = torch.tensor(y, dtype=torch.float32)
@@ -17,7 +17,7 @@ def train_neural_network(X, y):
     # Podział na train/val
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    model = NeuralNetwork()
+    model = NeuralNetwork(n_steps*2)
 
     n_epochs = 300
     batch_size = 32
@@ -91,11 +91,12 @@ def plot_ecdf(data, label):
 
 
 def main():
-    # UWAGA SA WCZYTYWANE PO 4 WPISY Z PLIKU W OBECNEJ IMPLEMENTACJI
-    X_train, y_train, X_scaler, Y_scaler = load_all_training_data()
+    n_steps = 3 # liczba próbek z poprzednich chwil czasowych wykorzystywanych przez sieć neuronową - 1
+
+    X_train, y_train, X_scaler, Y_scaler = load_all_training_data(n_steps)
     C_scaler = MinMaxScaler()
-    X_test, y_test_scaled, coords = load_all_test_data(X_scaler, Y_scaler, C_scaler)
-    model = train_neural_network(X_train, y_train)
+    X_test, y_test_scaled, coords = load_all_test_data(X_scaler, Y_scaler, C_scaler, n_steps)
+    model = train_neural_network(X_train, y_train, n_steps)
 
 
     y_pred_test_scaled = model(torch.tensor(X_test, dtype=torch.float32)).detach().numpy()
