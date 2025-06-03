@@ -58,9 +58,9 @@ def load_all_training_data(n_steps=3):
                 try:
                     X, Y, C = load_data(path)
                     X_seq, Y_seq, C_seq = create_sequences(X, Y, C, n_steps)
-                    X_all.append(X_seq)
-                    Y_all.append(Y_seq)
-                    C_all.append(C_seq)
+                    X_all.append(X_seq[:25])
+                    Y_all.append(Y_seq[:25])
+                    C_all.append(C_seq[:25])
                     print(f"Otwarto plik: {filename}")
                 except Exception as e:
                     print(f"Błąd w pliku {filename}: {e}")

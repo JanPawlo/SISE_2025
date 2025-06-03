@@ -91,7 +91,7 @@ def plot_ecdf(data, label):
 
 
 def main():
-    n_steps = 3 # liczba próbek z poprzednich chwil czasowych wykorzystywanych przez sieć neuronową - 1
+    n_steps = 1  # liczba próbek z poprzednich chwil czasowych wykorzystywanych przez sieć neuronową - 1
 
     X_train, y_train, X_scaler, Y_scaler = load_all_training_data(n_steps)
     C_scaler = MinMaxScaler()
@@ -134,6 +134,13 @@ def main():
     plt.legend()
     plt.grid(True)
     plt.show()
+
+    weight_0 = model.hidden1.weight
+    weight_1 = model.hidden2.weight
+    weight_2 = model.hidden3.weight
+    print(f"Warstwa 1: {weight_0}")
+    print(f"Warstwa 2: {weight_1}")
+    print(f"Warstwa 3: {weight_2}")
 
 
 

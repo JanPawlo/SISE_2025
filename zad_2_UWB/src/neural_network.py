@@ -4,23 +4,23 @@ import torch.nn as nn
 class NeuralNetwork(nn.Module):
     def __init__(self, input_dim=6):
         super().__init__()
-        self.hidden1 = nn.Linear(input_dim, 32)
-        self.bn1 = nn.BatchNorm1d(32)
+        self.hidden1 = nn.Linear(input_dim, 16)
+        self.bn1 = nn.BatchNorm1d(16)
         self.act1 = nn.ReLU()
         self.dropout1 = nn.Dropout(0.3)
 
 
-        self.hidden2 = nn.Linear(32, 64)
-        self.bn2 = nn.BatchNorm1d(64)
+        self.hidden2 = nn.Linear(16, 32)
+        self.bn2 = nn.BatchNorm1d(32)
         self.act2 = nn.ReLU()
         self.dropout2 = nn.Dropout(0.3)
 
-        self.hidden3 = nn.Linear(64, 64)
-        self.bn3 = nn.BatchNorm1d(64)
+        self.hidden3 = nn.Linear(32, 16)
+        self.bn3 = nn.BatchNorm1d(16)
         self.act3 = nn.ReLU()
         self.dropout3 = nn.Dropout(0.3)
 
-        self.output = nn.Linear(64, 2)
+        self.output = nn.Linear(16, 2)
         self.act_output = nn.Sigmoid()
 
     def forward(self, x):
